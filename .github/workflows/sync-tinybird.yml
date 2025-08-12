@@ -1,0 +1,67 @@
+name: Sync TinyBird Folder from Ghost
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Sync TinyBird folder
+        run: |
+          echo "Starting sync of TinyBird folder..."
+          
+          # Clone Ghost repo (shallow clone for faster download)
+          git clone --depth 1 https://github.com/TryGhost/Ghost.git temp-ghost
+          
+          # Check if the source folder exists
+          if [ ! -d "temp-ghost/ghost/core/core/server/data/tinybird" ]; then
+            echo "Error: TinyBird folder not found in Ghost repo"
+            exit 1
+          fi
+          
+          # Backup existing folder (if any) and copy new one
+          if [ -d "tinybird" ]; then
+            echo "Backing up existing TinyBird folder..."
+            rm -rf tinybird
+          fi
+          
+          mkdir -p tinybird
+          cp -r temp-ghost/ghost/core/core/server/data/tinybird/* tinybird/
+          echo "TinyBird folder copied successfully"
+          
+          # Clean up
+          rm -rf temp-ghost
+          
+          # Check for changes and commit
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tinybird
+          
+          if git diff --staged --quiet; then
+            echo "No changes detected in TinyBird folder"
+          else
+            COMMIT_MESSAGE="Sync TinyBird folder from Ghost repo ($(date +%Y-%m-%d))"
+            git commit -m "$COMMIT_MESSAGE"
+            git push
+            echo "Changes committed and pushed successfully"
+          fi
+          
+      - name: Update README with sync info
+        run: |
+          # Add sync timestamp to README if it exists
+          if [ -f "README.md" ]; then
+            echo "" >> README.md
+            echo "Last synced: $(date)" >> README.md
+            git add README.md
+            if ! git diff --staged --quiet; then
+              git commit -m "Update sync timestamp"
+              git push
+            fi
+          fi
