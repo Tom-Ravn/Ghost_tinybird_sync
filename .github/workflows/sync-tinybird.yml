@@ -28,7 +28,7 @@ jobs:
           
           # Backup existing folder (if any) and copy new one
           if [ -d "tinybird" ]; then
-            echo "Backing up existing TinyBird folder..."
+            echo "Removing existing tinybird folder..."
             rm -rf tinybird
           fi
           
