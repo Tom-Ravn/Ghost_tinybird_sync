@@ -10,7 +10,7 @@ Automatically synced TinyBird folder from [Ghost CMS](https://github.com/TryGhos
 
 ## Auto-Update
 
-Syncs weekly from Ghost repo. Always up-to-date.
+Syncs weekly from Ghost repo. Always up-to-date with official repo.
 
 ## License
 
