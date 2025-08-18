@@ -56,10 +56,11 @@ jobs:
       - name: Update README with sync info
         run: |
           # Add sync timestamp to README if it exists
-          if [ -f "README.md" ]; then
-            echo "" >> README.md
-            echo "Last synced: $(date)" >> README.md
-            git add README.md
+          README_FILE=$(find . -iname "readme.md" | head -1)
+          if [ -n "$README_FILE" ]; then
+            echo "" >> "$README_FILE"
+            echo "Last synced: $(date)" >> "$README_FILE"
+            git add "$README_FILE"
             if ! git diff --staged --quiet; then
               git commit -m "Update sync timestamp"
               git push
