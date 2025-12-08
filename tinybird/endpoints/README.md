@@ -107,4 +107,3 @@ where
 ```
 
 The join with `filtered_sessions` ensures only hits from sessions matching the filter criteria are included, while the `where` clause can apply additional hit-level filtering specific to the endpoint's purpose.
-Last synced: Mon Dec  1 02:51:17 UTC 2025
