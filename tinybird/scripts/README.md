@@ -71,5 +71,3 @@ Reads tokens from Docker volume automatically. Override via:
 **"Database connection failed"** - Check MySQL is running: `docker ps | grep mysql`
 
 **No posts/members found** - Generate Ghost data first: `pnpm reset:data`
-
-Last synced: Mon Jun  8 03:16:54 UTC 2026
